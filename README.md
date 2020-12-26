@@ -1,4 +1,4 @@
-** The Classic Snake Game **
+## The Classic Snake Game ##
 
 A work in progress, I wanted to try my hand ad creating the classic arcade game Snake in C.
 
