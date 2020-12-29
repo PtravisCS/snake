@@ -47,6 +47,21 @@ struct Snake {
 
 };
 
+void end(char *message) {
+
+
+  mvprintw(LINES / 2, COLS / 3, message);
+
+  timeout(-1); //Reset the wait timeout to the default -1 (wait indefinitly)
+
+  getch(); //Wait for a keypress and then throw away the recieved char
+
+  endwin(); //End the ncurses window session
+
+  exit(0); //Exit the program
+
+}
+
 int main(int argc, char *argv[]) {
 
   struct Snake snake; 
@@ -133,7 +148,7 @@ int main(int argc, char *argv[]) {
 
         if (snake.xvel != 0 || snake.yvel != 0) { //And if the snake is moving
 
-          goto end; //Game Over    
+          end("Game Over! Press any key to continue"); //Game Over    
 
         }
 
@@ -144,13 +159,13 @@ int main(int argc, char *argv[]) {
 
     if (snake.coords[0].ycoord < 3 || snake.coords[0].xcoord < 3) { //Check if snake goes off left or top of map
 
-      goto end; //Game Over
+      end("Game Over! Press any key to continue"); //Game Over    
 
     }
 
     if (snake.coords[0].ycoord > (LINES - 2) || snake.coords[0].xcoord > (COLS -  2)) { //Check if snake goes off right or bottom of map
 
-      goto end; //Game Over
+      end("Game Over! Press any key to continue"); //Game Over    
 
     }
 
@@ -165,15 +180,5 @@ int main(int argc, char *argv[]) {
     refresh();
 
   }
-
-end:
-
-  mvprintw(LINES / 2, COLS / 3, "Game Over! Press any key to continue");
-
-  timeout(-1); //Set a wait timeout, this enables the game to continue without waiting (long) for each getch() operation to complete
-
-  getch();
-
-  endwin();
 
 }
