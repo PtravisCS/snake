@@ -15,6 +15,7 @@
 #include <stdlib.h>
 #include <ncurses.h>
 #include <time.h>
+#include <string.h>
 
 /*
  * Name     : Coords
@@ -56,7 +57,7 @@ struct Snake {
  */
 void end(char *message) {
 
-  mvprintw(LINES / 2, COLS / 3, message);
+  mvprintw((LINES - 1) / 2, (COLS - strlen(message)) / 2, message);
 
   timeout(-1); //Reset the wait timeout to the default -1 (wait indefinitly)
 
@@ -328,6 +329,8 @@ int main(int argc, char *argv[]) {
 
     printBorders(); //print the screen borders
 
+    mvprintw(2,3, "-Score: %i-", snake.size);
+
     snake = moveSnake(snake); //move the snake around the screen based on its current velocity
 
     testCollision(snake); //test if the snake is colliding with the edges of the screen or itself and if it is end the game
@@ -343,7 +346,7 @@ int main(int argc, char *argv[]) {
 
     mvprintw(pellet.ycoord, pellet.xcoord, "@"); //Print the pellet to the screen
     //mvprintw(1,1,"x: %i, y: %i", pellet.xcoord, pellet.ycoord); //uncommment this line to see the pellet's coordinates
-
+    
     refresh();
 
   }
