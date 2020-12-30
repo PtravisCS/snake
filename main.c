@@ -14,6 +14,7 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <ncurses.h>
+#include <time.h>
 
 /*
  * Name     : Coords
@@ -47,8 +48,13 @@ struct Snake {
 
 };
 
-void end(char *message) {
 
+/*
+ * Name     : end
+ * Purpose  : Used to gracefully end the game
+ * Author   : Paul Travis
+ */
+void end(char *message) {
 
   mvprintw(LINES / 2, COLS / 3, message);
 
@@ -62,12 +68,27 @@ void end(char *message) {
 
 }
 
+/*
+ * Name     : randInRange
+ * Purpose  : Used to return a random integer within a given range
+ * Author   : Paul Travis
+ */
+int randInRange(int low, int high) {
+
+  srand(time(0));
+  return rand() % (high + 1 - low) + low;
+
+}
+
 int main(int argc, char *argv[]) {
 
-  struct Snake snake; 
+  struct Snake snake; //Instantiate an instance of the snake 
+  struct Coords pellet; //Create a coord pair to represent the pellets the snake eats
   snake.xvel = 0; //Set the x velocity of the snake to 0.
   snake.yvel = 0; //Set the y velocity of the snake to 0.
-  snake.size = 10; //Set the size of the snake to 0 (size of the snake is 0 based as opposed to 1 based).
+  snake.size = 1; //Set the size of the snake to 0 (size of the snake is 0 based as opposed to 1 based).
+  pellet.ycoord = randInRange(3, (LINES - 2));
+  pellet.xcoord = randInRange(3, (COLS - 2));
 
   for (int i = 0; i < 20; i++) { //Set all previous coords to -1 which the game treats as an empty coordinate set.
 
@@ -81,7 +102,7 @@ int main(int argc, char *argv[]) {
 
   initscr(); //Initialize the ncurses screen instance
   clear();  //Clear the screen (I really wish a library wasn't necessary for this behaviour
-  noecho(); //Disable use input echoing
+  noecho(); //Disable user input echoing
   cbreak(); //Disable line buffering and erase/kill char processing allowing chars typed by user to be available to program immediately
   timeout(150); //Set a wait timeout, this enables the game to continue without waiting (long) for each getch() operation to complete
   curs_set(0); //Hide the terminal cursor
@@ -132,6 +153,7 @@ int main(int argc, char *argv[]) {
 
     }
 
+
     for (int i = snake.size; i > 0; i--) { //Re-arrange the snakes coords to match it's new position.
 
       snake.coords[i].ycoord = snake.coords[i - 1].ycoord;
@@ -163,22 +185,34 @@ int main(int argc, char *argv[]) {
 
     }
 
-    if (snake.coords[0].ycoord > (LINES - 2) || snake.coords[0].xcoord > (COLS -  2)) { //Check if snake goes off right or bottom of map
+    if (snake.coords[0].ycoord > (LINES - 3) || snake.coords[0].xcoord > (COLS -  3)) { //Check if snake goes off right or bottom of map
 
       end("Game Over! Press any key to continue"); //Game Over    
+
+    }
+
+    if (snake.coords[0].ycoord == pellet.ycoord && snake.coords[0].xcoord == pellet.xcoord) {
+
+      snake.size += 1;
+      pellet.ycoord = randInRange(3, (LINES - 3));
+      pellet.xcoord = randInRange(3, (COLS - 3));
+      printf("\a");
 
     }
 
     for (int i = 0; i < snake.size; i++) { //Print the snake to the screen
 
       mvprintw(snake.coords[i].ycoord, snake.coords[i].xcoord, "*");
-      //mvprintw(i + 1,1,"%i: %i,%i", i, snake.coords[i].ycoord, snake.coords[i].xcoord); //uncomment this line to see the snake's coordinate array.
-
+      //mvprintw(i + 2,1,"%i: %i,%i", i, snake.coords[i].ycoord, snake.coords[i].xcoord); //uncomment this line to see the snake's coordinate array.
 
     }
+
+    mvprintw(pellet.ycoord, pellet.xcoord, "@");
+    mvprintw(1,1,"x: %i, y: %i", pellet.xcoord, pellet.ycoord);
 
     refresh();
 
   }
 
+  end("Thanks for playing");
 }
