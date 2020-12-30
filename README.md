@@ -9,6 +9,6 @@ Included binary is for a debian system running debian 10.
 
 ### TO DO ###
 
-* Add code to add pellets to random locations on the map.
-* Add code for snake to consume pellets and grow in length.
+* ~~Add code to add pellets to random locations on the map.~~
+* ~~Add code for snake to consume pellets and grow in length.~~
 * Refactor code (badly needed), break everything out of main into individual functions.
